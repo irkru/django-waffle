@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models.signals import post_save, post_delete, m2m_changed
 
+from waffle.storage import default_storage
 from waffle.models import Flag, Sample, Switch
 
 
@@ -24,6 +25,8 @@ SWITCH_CACHE_KEY = u'switch:%s'
 SWITCHES_ALL_CACHE_KEY = u'switches:all'
 COOKIE_NAME = getattr(settings, 'WAFFLE_COOKIE', 'dwf_%s')
 TEST_COOKIE_NAME = getattr(settings, 'WAFFLE_TESTING_COOKIE', 'dwft_%s')
+KEY_PREFIX = getattr(settings, 'WAFFLE_KEY_PREFIX', 'dwf_%s')
+STORAGE = getattr(settings, 'WAFFLE_STORAGE', 'waffle.storage.cookie.CookieStorage')
 
 
 def keyfmt(k, v=None):
@@ -65,6 +68,7 @@ def flag_is_active(request, flag_name):
         return False
 
     if flag.testing:  # Testing mode is on.
+        # TODO: support storages
         tc = TEST_COOKIE_NAME % flag_name
         if tc in request.GET:
             on = request.GET[tc] == '1'
@@ -114,9 +118,9 @@ def flag_is_active(request, flag_name):
         elif flag_name in request.waffles:
             return request.waffles[flag_name][0]
 
-        cookie = COOKIE_NAME % flag_name
-        if cookie in request.COOKIES:
-            flag_active = (request.COOKIES[cookie] == 'True')
+        storage = default_storage(request)
+        if flag_name in storage:
+            flag_active = storage[flag_name]
             set_flag(request, flag_name, flag_active, flag.rollout)
             return flag_active
 
