@@ -4,7 +4,7 @@ import hashlib
 
 import redis
 
-from waffle import KEY_PREFIX
+from waffle import KEY_PREFIX, REDIS
 from waffle.storage.base import BaseStorage
 
 
@@ -13,7 +13,7 @@ class RedisStorage(BaseStorage):
     def __init__(self, *args, **kwargs):
         super(RedisStorage, self).__init__(*args, **kwargs)
 
-        self.redis = redis.StrictRedis()
+        self.redis = redis.StrictRedis(**REDIS)
         self.user_key = KEY_PREFIX % hashlib.sha1(''.join([
             self.request.META.get('REMOTE_ADDR'),
             self.request.META.get('HTTP_USER_AGENT', ''),

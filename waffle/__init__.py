@@ -27,6 +27,7 @@ COOKIE_NAME = getattr(settings, 'WAFFLE_COOKIE', 'dwf_%s')
 TEST_COOKIE_NAME = getattr(settings, 'WAFFLE_TESTING_COOKIE', 'dwft_%s')
 KEY_PREFIX = getattr(settings, 'WAFFLE_KEY_PREFIX', 'dwf_%s')
 STORAGE = getattr(settings, 'WAFFLE_STORAGE', 'waffle.storage.cookie.CookieStorage')
+REDIS = getattr(settings, 'WAFFLE_REDIS', {})
 
 
 def keyfmt(k, v=None):
