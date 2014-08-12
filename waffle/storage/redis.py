@@ -14,10 +14,15 @@ class RedisStorage(BaseStorage):
         super(RedisStorage, self).__init__(*args, **kwargs)
 
         self.redis = redis.StrictRedis(**REDIS)
-        self.user_key = KEY_PREFIX % hashlib.sha1(u''.join([
-            self.request.META.get('REMOTE_ADDR'),
-            self.request.META.get('HTTP_USER_AGENT', ''),
-        ]).encode('utf-8')).hexdigest()
+        remote_addr = self.request.META.get('REMOTE_ADDR', u'')
+        user_agent = self.request.META.get('HTTP_USER_AGENT', u'')
+        # Ignore non-ascii chars
+        if not isinstance(user_agent, unicode):
+            user_agent = user_agent.decode('utf-8', 'ignore')
+
+        self.user_key = KEY_PREFIX % hashlib.sha1(
+            u''.join([remote_addr, user_agent]).encode('utf-8')
+        ).hexdigest()
 
     def __setitem__(self, key, value):
         return self.redis.hset(self.user_key, key, int(bool(value)))
