@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django import template
 from django.template.base import VariableDoesNotExist
 
@@ -9,6 +11,8 @@ register = template.Library()
 
 
 class WaffleNode(template.Node):
+    child_nodelists = ('nodelist_true', 'nodelist_false')
+
     def __init__(self, nodelist_true, nodelist_false, condition, name,
                  compiled_name):
         self.nodelist_true = nodelist_true

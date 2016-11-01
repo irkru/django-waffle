@@ -2,6 +2,55 @@
 Waffle Changelog
 ================
 
+v0.12
+=====
+
+- Drop support for Django<1.8 and Python<2.7.
+- Moved bulk of code from waffle.*_is_active methods to .is_active
+  instance methods.
+- Centralized caching code behind Class.get() methods.
+- Significant caching overhaul.
+- Automatically invalidate cache on waffle upgrade.
+
+
+v0.11.1
+=======
+
+- Fix Django 1.9 support.
+- Fix several Python >=3.4 issues.
+- Fix output of `waffle_switch --list`.
+- Fix small documentation issues.
+- Cache a plain list instead of a ValuesListQuerySet.
+
+
+v0.11
+=====
+
+- Support Django 1.8.
+- Move from jingo-specific to generic Jinja2 template support.
+- Added tools for integration testing.
+- Drop Django 1.5 support.
+- Fix several code and documentation bugs.
+- Add optional redirect parameter to view decorators.
+
+
+v0.10.2
+=======
+
+- Overhaul documentation.
+- Move CLI commands to waffle_(flag|sample|switch) to be more polite.
+- Add override_(flag|sample|switch) testing tools.
+- Changed the default of WAFFLE_SECURE to True.
+
+
+v0.10.1
+=======
+
+- Support Python 3.
+- Support Django 1.7.
+- Add WAFFLE_CACHE_NAME.
+- Fix caching for empty lists.
+
 
 v0.10.0
 =======

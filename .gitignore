@@ -5,8 +5,10 @@ dist
 *.egg-info
 *test.db
 .coverage
+.idea/
 .project
 .pydevproject
 .settings
 docs/_*
 .idea/
+.DS_Store

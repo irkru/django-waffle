@@ -1,10 +1,11 @@
-from django.test import Client
+from __future__ import unicode_literals
 
-from test_utils import TestCase as BaseTestCase
+from django import test
+from django.core import cache
 
 
-class TestCase(BaseTestCase):
-    def setUp(self):
-        super(TestCase, self).setUp()
+class TestCase(test.TransactionTestCase):
 
-        self.client = Client()
+    def _pre_setup(self):
+        cache.cache.clear()
+        super(TestCase, self)._pre_setup()

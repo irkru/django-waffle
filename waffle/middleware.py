@@ -1,18 +1,26 @@
-from django.conf import settings
+from __future__ import unicode_literals
+
 from django.utils.encoding import smart_str
 
-from waffle import COOKIE_NAME, TEST_COOKIE_NAME, default_storage
+from waffle.utils import get_setting
+from waffle.storage import default_storage
+
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object  # fallback for Django < 1.10
 
 
-class WaffleMiddleware(object):
+class WaffleMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
-        secure = getattr(settings, 'WAFFLE_SECURE', False)
-        max_age = getattr(settings, 'WAFFLE_MAX_AGE', 2592000)  # 1 month
+        secure = get_setting('SECURE')
+        max_age = get_setting('MAX_AGE')
 
         if hasattr(request, 'waffles'):
             storage = default_storage(request)
-            for name in request.waffles:
-                active, rollout = request.waffles[name]
+            for k in request.waffles:
+                name = smart_str(get_setting('COOKIE') % k)
+                active, rollout = request.waffles[k]
                 if rollout and not active:
                     # "Inactive" is a session cookie during rollout mode.
                     age = None
@@ -22,7 +30,7 @@ class WaffleMiddleware(object):
 
         if hasattr(request, 'waffle_tests'):
             for k in request.waffle_tests:
-                name = smart_str(TEST_COOKIE_NAME % k)
+                name = smart_str(get_setting('TEST_COOKIE') % k)
                 value = request.waffle_tests[k]
                 # TODO: support storage
                 response.set_cookie(name, value=value)

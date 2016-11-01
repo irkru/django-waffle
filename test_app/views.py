@@ -13,8 +13,8 @@ def flag_in_view(request):
     return HttpResponse('off')
 
 
-def flag_in_jingo(request):
-    return render(request, 'jingo/jingo.html')
+def flag_in_jinja(request):
+    return render(request, 'jinja/jinja.html')
 
 
 def flag_in_django(request):
@@ -48,4 +48,38 @@ def flagged_view(request):
 
 @waffle_flag('!foo')
 def flagged_off_view(request):
+    return HttpResponse('foo')
+
+
+def foo_view(request):
+    return HttpResponse('redirected')
+
+
+@waffle_switch('foo', redirect_to=foo_view)
+def switched_view_with_valid_redirect(request):
+    return HttpResponse('foo')
+
+
+@waffle_switch('foo', redirect_to='foo_view')
+def switched_view_with_valid_url_name(request):
+    return HttpResponse('foo')
+
+
+@waffle_switch('foo', redirect_to='invalid_view')
+def switched_view_with_invalid_redirect(request):
+    return HttpResponse('foo')
+
+
+@waffle_flag('foo', redirect_to=foo_view)
+def flagged_view_with_valid_redirect(request):
+    return HttpResponse('foo')
+
+
+@waffle_flag('foo', redirect_to='foo_view')
+def flagged_view_with_valid_url_name(request):
+    return HttpResponse('foo')
+
+
+@waffle_flag('foo', redirect_to='invalid_view')
+def flagged_view_with_invalid_redirect(request):
     return HttpResponse('foo')

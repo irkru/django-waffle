@@ -1,5 +1,7 @@
-import jingo
+from __future__ import unicode_literals
+
 import jinja2
+from jinja2.ext import Extension
 
 from waffle import flag_is_active, sample_is_active, switch_is_active
 from waffle.views import _generate_waffle_js
@@ -15,9 +17,11 @@ def inline_wafflejs_helper(context):
     return _generate_waffle_js(context['request'])
 
 
-jingo.env.globals['waffle'] = {
-    'flag': flag_helper,
-    'switch': switch_is_active,
-    'sample': sample_is_active,
-    'wafflejs': inline_wafflejs_helper
-}
+class WaffleExtension(Extension):
+    def __init__(self, environment):
+        environment.globals['waffle'] = {
+            'flag': flag_helper,
+            'switch': switch_is_active,
+            'sample': sample_is_active,
+            'wafflejs': inline_wafflejs_helper
+        }
