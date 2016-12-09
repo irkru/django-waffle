@@ -11,6 +11,7 @@ __version__ = '.'.join(map(str, VERSION))
 
 KEY_PREFIX = getattr(settings, 'WAFFLE_KEY_PREFIX', 'dwf_%s')
 STORAGE = getattr(settings, 'WAFFLE_STORAGE', 'waffle.storage.cookie.CookieStorage')
+REDIS = getattr(settings, 'WAFFLE_REDIS', {})
 
 
 def flag_is_active(request, flag_name):
